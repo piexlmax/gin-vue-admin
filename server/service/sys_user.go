@@ -117,3 +117,81 @@ func UploadHeaderImg(uuid uuid.UUID, filePath string) (err error, userInter *mod
 	err = global.GVA_DB.Where("uuid = ?", uuid).First(&user).Update("header_img", filePath).First(&user).Error
 	return err, &user
 }
+
+// @title    BindMFA
+// @description   bind google mfa for a certain user, 绑定用户多因子认证
+// @auth                     （2020/07/09  11:21）
+// @param     u               *model.SysUser
+// @return    err             error
+// @return    userInter       *SysUser
+
+func BindMFA(u *model.SysUser) (err error, userInter *model.SysUser) {
+	var user model.SysUser
+	err = global.GVA_DB.Where("username = ?", u.Username).First(&user).Update("IsOpen", true).First(&user).Error
+	return err, &user
+}
+
+// @title    CloseMFA
+// @description   bind google mfa for a certain user, 关闭用户多因子认证
+// @auth                     （2020/07/09  11:25）
+// @param     u               *model.SysUser
+// @return    err             error
+// @return    userInter       *SysUser
+
+func CloseMFA(u *model.SysUser) (err error, userInter *model.SysUser) {
+	var user model.SysUser
+	err = global.GVA_DB.Where("username = ?", u.Username).First(&user).Update("IsOpen", false).First(&user).Error
+	return err, &user
+}
+
+// @title    GetSecret
+// @description   get google mfa secret for a certain user, 获取用户多因子认证秘钥
+// @auth                     （2020/07/09  14:28）
+// @param     u               *model.SysUser
+// @return    err             error
+// @return    secret          string
+
+func GetSecret(uid float64) (err error, secret string) {
+	var user model.SysUser
+	err = global.GVA_DB.Where("id = ?", uid).First(&user).Error
+	return err, user.Secret
+}
+
+// @title    UpdateSecret
+// @description   update google mfa secret for a certain user, 更新用户多因子认证秘钥信息
+// @auth                     （2020/07/10  10:37）
+// @param     uid               float64
+// @param     secret            string
+// @return    err             error
+
+func UpdateSecret(uid float64,secret string) (err error, userInfo *model.SysUser) {
+	var user model.SysUser
+	err = global.GVA_DB.Where("id = ?", uid).First(&user).Update("secret",secret).Error
+	return err,&user
+}
+
+// @title    CheckMfaIsOpen
+// @description   get google mfa secret for a certain user, 获取用户是否开启多因子认证
+// @auth                     （2020/07/09  21:34）
+// @param     u               *model.SysUser
+// @return    err             error
+// @return    isopen          boolean
+
+func CheckMfaIsOpen(uid float64) (err error, isopen bool) {
+	var user model.SysUser
+	err = global.GVA_DB.Where("id = ?", uid).First(&user).Error
+	return err, user.IsOpen
+}
+
+// @title    GetUserInfoById
+// @description   get user information by id, 根据用户id获取用户信息
+// @auth                     （2020/07/12  12:00）
+// @param     u               *model.SysUser
+// @return    err             error
+// @return    userInfo       *SysUser
+
+func GetUserInfoById(uid float64) (err error, userInfo *model.SysUser) {
+	var user model.SysUser
+	err = global.GVA_DB.Where("id = ?", uid).First(&user).Error
+	return err, &user
+}

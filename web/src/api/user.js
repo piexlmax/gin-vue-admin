@@ -95,3 +95,53 @@ export const deleteUser = (data) => {
         data: data
     })
 }
+
+// @Tags SysUser
+// @Summary 获取用户多因子认证信息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.SetUserAuth true "获取用户多因子认证信息"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取用户多因子认证信息成功"}"
+// @Router /user/getusermfainfo [post]
+export const getusermfainfo = (data) => {
+    return service({
+        url: "/user/getusermfainfo",
+        method: 'post',
+        data: data
+    })
+}
+
+
+// @Tags SysUser
+// @Summary 绑定用户多因子认证
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.SetUserAuth true "绑定多因子认证"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"绑定多因子认证信息成功"}"
+// @Router /user/bindmfa [post]
+export const bindmfa = (data) => {
+    return service({
+        url: "/user/bindmfa",
+        method: 'post',
+        data: data
+    })
+}
+
+
+// @Tags SysUser
+// @Summary 解除用户多因子认证
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.SetUserAuth true "解除多因子认证"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"解除多因子认证信息成功"}"
+// @Router /user/unbindmfa [post]
+export const unbindmfa = (data) => {
+    return service({
+        url: "/user/unbindmfa",
+        method: 'post',
+        data: data
+    })
+}

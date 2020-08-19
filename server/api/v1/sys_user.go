@@ -290,3 +290,211 @@ func DeleteUser(c *gin.Context) {
 		response.OkWithMessage("删除成功", c)
 	}
 }
+
+
+// @Tags SysUser
+// @Summary 检查用户是否开启二次认证
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.GetById true "检查用户是否开启二次认证"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"用户已开启二次认证"}"
+// @Router /user/checkusermfaisopen [post]
+func CheckUserMFAIsOpen(c *gin.Context) {
+	var reqId request.GetById
+	_ = c.ShouldBindJSON(&reqId)
+	IdVerifyErr := utils.Verify(reqId, utils.CustomizeMap["IdVerify"])
+	if IdVerifyErr != nil {
+		response.FailWithMessage(IdVerifyErr.Error(), c)
+		return
+	}
+	err,isopen := service.CheckMfaIsOpen(reqId.Id)
+	if err != nil {
+		response.FailWithMessage(fmt.Sprintf("检查用户是否开启二次认证失败，%v", err), c)
+	} else {
+		response.OkWithData(map[string]bool{"isopen":isopen,"success":true},c)
+	}
+}
+
+
+// @Tags SysUser
+// @Summary 获取用户是否开启二次认证及相关信息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.GetById true "获取用户是否开启二次认证及相关信息"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取用户是否开启二次认证及相关信息"}"
+// @Router /user/getusermfainfo [post]
+func GetUserMFAInfo(c *gin.Context) {
+	var reqId request.GetById
+	_ = c.ShouldBindJSON(&reqId)
+	IdVerifyErr := utils.Verify(reqId, utils.CustomizeMap["IdVerify"])
+	if IdVerifyErr != nil {
+		response.FailWithMessage(IdVerifyErr.Error(), c)
+		return
+	}
+	err,secret := service.GetSecret(reqId.Id)
+	if err != nil {
+		response.FailWithMessage(fmt.Sprintf("获取用户多因子认证相关信息失败，%v", err), c)
+		return
+	}
+	accountname := ""
+	isOpen := false
+	if secret == "" {
+		usersecret,err := utils.GenerateSecret()
+		if err!= nil{
+			response.FailWithMessage(fmt.Sprintf("生成动态秘钥失败，%v", err), c)
+			return
+		}
+		//if user has no secret then update to database
+		err1,_ := service.UpdateSecret(reqId.Id,usersecret)
+		if err1 != nil{
+			response.FailWithMessage(fmt.Sprintf("更新用户动态秘钥至数据库失败，%v", err1), c)
+			return
+		}
+		secret = usersecret
+	}
+	err, userinfo := service.GetUserInfoById(reqId.Id)
+	if err!= nil{
+		response.FailWithMessage(fmt.Sprintf("获取用户信息失败，%v", err), c)
+		return
+	}
+	accountname = userinfo.Username
+	isOpen = userinfo.IsOpen
+	err,qrcode := utils.GenerateMFAQrcode(secret,accountname)
+	if err!= nil{
+		response.FailWithMessage(fmt.Sprintf("生成google多因子认证二维码失败，%v", err), c)
+		return
+	}
+	response.OkWithData(request.UserMFAInfo{
+		Isopen:isOpen,
+		QrCode:qrcode,
+		AccountName:accountname,
+		Secret:secret,
+	},c)
+}
+
+// @Tags SysUser
+// @Summary 绑定用户二次认证信息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.GetById true "绑定多因子认证"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取用户是否开启二次认证及相关信息"}"
+// @Router /user/bindmfa [post]
+func BindMfa(c *gin.Context) {
+	var reqId request.UserBindMfainfo
+	_ = c.ShouldBindJSON(&reqId)
+	VerifyRule := utils.Rules{
+		"Id":        {utils.NotEmpty()},
+		"Password": {utils.NotEmpty()},
+	}
+	IdVerifyErr := utils.Verify(reqId, VerifyRule)
+	if IdVerifyErr != nil {
+		response.FailWithMessage(IdVerifyErr.Error(), c)
+		return
+	}
+	err,secret := service.GetSecret(reqId.Id)
+	if err != nil {
+		response.FailWithMessage(fmt.Sprintf("获取用户多因子认证相关信息失败，%v", err), c)
+		return
+	}
+	err, userinfo := service.GetUserInfoById(reqId.Id)
+	if err!= nil{
+		response.FailWithMessage(fmt.Sprintf("获取用户信息失败，%v", err), c)
+		return
+	}
+	isOpen := userinfo.IsOpen
+	authkey := reqId.AuthKey
+	if !isOpen {
+		err,isauth := utils.AuthenticateMFA(secret,authkey)
+		if err!= nil{
+			response.FailWithMessage(fmt.Sprintf("多因子认证调用时失败，%v", err), c)
+			return
+		}
+		if isauth{
+			err, _ := service.BindMFA(userinfo)
+			if err != nil{
+				response.OkWithData(map[string]bool{
+					"success": false,
+				},c)
+				return
+			}
+			response.OkWithData(map[string]bool{
+				"success": true,
+			},c)
+			return
+		}else {
+			response.OkWithData(map[string]bool{
+				"success": false,
+			},c)
+			return
+		}
+	} else {
+		response.FailWithMessage(fmt.Sprintf("绑定用户多因子认证时失败,用户已经绑定多因子登录认证"), c)
+		return
+	}
+}
+
+
+// @Tags SysUser
+// @Summary 解除用户二次认证信息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.GetById true "解除绑定多因子认证"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取用户是否开启二次认证及相关信息"}"
+// @Router /user/unbindmfa [post]
+func UnBindMfa(c *gin.Context) {
+	var reqId request.UserBindMfainfo
+	_ = c.ShouldBindJSON(&reqId)
+	VerifyRule := utils.Rules{
+		"Id":        {utils.NotEmpty()},
+		"Password": {utils.NotEmpty()},
+	}
+	IdVerifyErr := utils.Verify(reqId, VerifyRule)
+	if IdVerifyErr != nil {
+		response.FailWithMessage(IdVerifyErr.Error(), c)
+		return
+	}
+	err,secret := service.GetSecret(reqId.Id)
+	if err != nil {
+		response.FailWithMessage(fmt.Sprintf("获取用户多因子认证相关信息失败，%v", err), c)
+		return
+	}
+	err, userinfo := service.GetUserInfoById(reqId.Id)
+	if err!= nil{
+		response.FailWithMessage(fmt.Sprintf("获取用户信息失败，%v", err), c)
+		return
+	}
+	isOpen := userinfo.IsOpen
+	authkey := reqId.AuthKey
+	if isOpen {
+		err,isauth := utils.AuthenticateMFA(secret,authkey)
+		if err!= nil{
+			response.FailWithMessage(fmt.Sprintf("多因子认证调用时失败，%v", err), c)
+			return
+		}
+		if isauth{
+			err, _ := service.CloseMFA(userinfo)
+			if err != nil{
+				response.OkWithData(map[string]bool{
+					"success": false,
+				},c)
+				return
+			}
+			response.OkWithData(map[string]bool{
+				"success": true,
+			},c)
+			return
+		}else {
+			response.OkWithData(map[string]bool{
+				"success": false,
+			},c)
+			return
+		}
+	} else {
+		response.FailWithMessage(fmt.Sprintf("解除用户多因子认证时失败,用户已经解除多因子登录认证"), c)
+		return
+	}
+}
