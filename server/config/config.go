@@ -1,5 +1,7 @@
 package config
 
+import "fmt"
+
 type Server struct {
 	Mysql     Mysql     `mapstructure:"mysql" json:"mysql" yaml:"mysql"`
 	Sqlite    Sqlite    `mapstructure:"sqlite" json:"sqlite" yaml:"sqlite"`
@@ -37,6 +39,10 @@ type Mysql struct {
 	MaxIdleConns int    `mapstructure:"max-idle-conns" json:"maxIdleConns" yaml:"max-idle-conns"`
 	MaxOpenConns int    `mapstructure:"max-open-conns" json:"maxOpenConns" yaml:"max-open-conns"`
 	LogMode      bool   `mapstructure:"log-mode" json:"logMode" yaml:"log-mode"`
+}
+
+func (m Mysql) Source() string {
+	return fmt.Sprintf("%s:%s@(%s)/%s?%s", m.Username, m.Password, m.Path, m.Dbname, m.Config)
 }
 
 type Redis struct {
