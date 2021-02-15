@@ -43,6 +43,18 @@
     </el-collapse>
 
     <el-divider></el-divider>
+
+    <div>
+      <el-form ref="autoCodeForm" label-width="120px" :inline="true">
+        <el-form-item label="名称">
+          <el-input v-model="autoFillName" placeholder="请输入名称" />
+        </el-form-item>
+        <el-form-item label="前缀">
+          <el-input v-model="autoFillPrefix" placeholder="请输入前缀" />
+        </el-form-item>
+      </el-form>
+    </div>
+
     <!-- 初始版本自动化代码工具 -->
     <el-form ref="autoCodeForm" :rules="rules" :model="form" label-width="120px" :inline="true">
       <el-form-item label="Struct名称" prop="structName">
@@ -143,8 +155,9 @@ const fieldTemplate = {
   dictType: ""
 };
 
+const pluralize = require('pluralize');
 import FieldDialog from "@/view/systemTools/autoCode/component/fieldDialog.vue";
-import { toUpperCase, toHump } from "@/utils/stringFun.js";
+import { toUpperCase, toHump, toSQLLine } from "@/utils/stringFun.js";
 import { createTemp, getDB, getTable, getColumn } from "@/api/autoCode.js";
 import { getDict } from "@/utils/dictionary";
 
@@ -191,11 +204,13 @@ export default {
       },
       dialogMiddle: {},
       bk: {},
-      dialogFlag: false
+      dialogFlag: false,
+      autoFillName: "",
+      autoFillPrefix: "",
     };
   },
   components: {
-    FieldDialog
+    FieldDialog,
   },
   methods: {
     editAndAddField(item) {
@@ -229,9 +244,9 @@ export default {
     enterDialog() {
       this.$refs.fieldDialog.$refs.fieldDialogFrom.validate(valid => {
         if (valid) {
-          this.dialogMiddle.fieldName = toUpperCase(
+          this.dialogMiddle.fieldName = toUpperCase(toHump(
             this.dialogMiddle.fieldName
-          );
+          ));
           if (this.addFlag == "add") {
             this.form.fields.push(this.dialogMiddle);
           }
@@ -361,11 +376,35 @@ export default {
           this.fdMap[item.label] = fdtype;
         });
       });
-    }
+    },
+    autoFillStructField(name, prefix) {
+      let name_copy = "";
+      if (name !== "") {
+        name = toSQLLine(name.replace(name[0], name[0].toLowerCase()));
+        name_copy = pluralize(name);
+      }
+      this.form.structName = toUpperCase(toHump(name));
+      this.form.tableName = prefix + name_copy;
+      this.form.abbreviation = toHump(name);
+      this.form.packageName = prefix + name;
+    },
+    autoFillInit() {
+      this.autoFillPrefix = window.localStorage.getItem('struct_auto_fill_prefix');
+    },
+  },
+  watch: {
+    autoFillName: function (val) {
+      this.autoFillStructField(val, this.autoFillPrefix);
+    },
+    autoFillPrefix: function (val) {
+      window.localStorage.setItem("struct_auto_fill_prefix", val);
+      this.autoFillStructField(this.autoFillName, val);
+    },
   },
   created() {
     this.getDb();
     this.setFdMap();
+    this.autoFillInit();
   }
 };
 </script>
