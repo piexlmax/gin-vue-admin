@@ -12,6 +12,24 @@ import (
 	"strings"
 )
 
+// 新增添加权限功能，用来给予超级管理员使用
+func AddCasbin(authorityId string, casbinInfo request.CasbinInfo) error {
+	rules := [][]string{}
+	cm := model.CasbinModel{
+		Ptype:       "p",
+		AuthorityId: authorityId,
+		Path:        casbinInfo.Path,
+		Method:      casbinInfo.Method,
+	}
+	rules = append(rules, []string{cm.AuthorityId, cm.Path, cm.Method})
+	e := Casbin()
+	success, _ := e.AddPolicies(rules)
+	if success == false {
+		return errors.New("存在相同api,添加失败,请联系管理员")
+	}
+	return nil
+}
+
 //@author: [piexlmax](https://github.com/piexlmax)
 //@function: UpdateCasbin
 //@description: 更新casbin权限
@@ -57,7 +75,6 @@ func UpdateCasbinApi(oldPath string, newPath string, oldMethod string, newMethod
 //@description: 获取权限列表
 //@param: authorityId string
 //@return: pathMaps []request.CasbinInfo
-
 
 func GetPolicyPathByAuthorityId(authorityId string) (pathMaps []request.CasbinInfo) {
 	e := Casbin()

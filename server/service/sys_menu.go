@@ -94,6 +94,14 @@ func AddBaseMenu(menu model.SysBaseMenu) (err error) {
 		err = errors.New("存在重复name，请修改name")
 	}
 	err = global.GVA_DB.Create(&menu).Error
+
+	// 如果没有错误则把菜单权限给超级管理员加上
+	if err == nil {
+		global.GVA_DB.Table("sys_authority_menus").Create([]map[string]interface{}{
+			{"sys_authority_authority_id": "1", "sys_base_menu_id": menu.ID},
+		})
+	}
+
 	return err
 }
 

@@ -18,7 +18,17 @@ func CreateApi(api model.SysApi) (err error) {
 	if !errors.Is(global.GVA_DB.Where("path = ? AND method = ?", api.Path, api.Method).First(&model.SysApi{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("存在相同api")
 	}
-	return global.GVA_DB.Create(&api).Error
+
+	err = global.GVA_DB.Create(&api).Error
+	// 如果没有错误则把菜单权限给管理员加上
+	if err == nil {
+		_ = AddCasbin("1", request.CasbinInfo{
+			Method: api.Method,
+			Path:   api.Path,
+		})
+	}
+
+	return err
 }
 
 //@author: [piexlmax](https://github.com/piexlmax)
