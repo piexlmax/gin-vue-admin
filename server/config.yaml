@@ -1,5 +1,7 @@
 # Gin-Vue-Admin Global Configuration
 
+language: 'en'
+
 # jwt configuration
 jwt:
   signing-key: 'qmPlus'

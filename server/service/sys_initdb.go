@@ -7,6 +7,7 @@ import (
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/source"
+
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -69,7 +70,7 @@ func InitDB(conf request.InitDB) error {
 		conf.Port = "3306"
 	}
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/", conf.UserName, conf.Password, conf.Host, conf.Port)
-	fmt.Println(dsn)
+
 	createSql := fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci;", conf.DBName)
 	if err := createTable(dsn, "mysql", createSql); err != nil {
 		return err
@@ -109,7 +110,7 @@ func InitDB(conf request.InitDB) error {
 		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
 		global.GVA_DB = db
 	}
-
+	source.Init()
 	err := global.GVA_DB.AutoMigrate(
 		model.SysUser{},
 		model.SysAuthority{},
