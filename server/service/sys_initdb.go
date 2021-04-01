@@ -9,10 +9,11 @@ import (
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/source"
 	"gin-vue-admin/utils"
+	"path/filepath"
+
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"path/filepath"
 )
 
 //@author: [songzhibin97](https://github.com/songzhibin97)
@@ -140,6 +141,8 @@ func InitDB(conf request.InitDB) error {
 		model.ExaSimpleUploader{},
 		model.ExaCustomer{},
 		model.SysOperationRecord{},
+
+		model.ExaSensitiveWord{},
 	)
 	if err != nil {
 		return err

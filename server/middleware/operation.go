@@ -2,16 +2,23 @@ package middleware
 
 import (
 	"bytes"
+	"encoding/json"
 	"gin-vue-admin/global"
+	"gin-vue-admin/misc/sensitive_word"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
 	"gin-vue-admin/service"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+)
+
+var (
+	Library *sensitive_word.Library
 )
 
 func OperationRecord() gin.HandlerFunc {
@@ -24,8 +31,21 @@ func OperationRecord() gin.HandlerFunc {
 			if err != nil {
 				global.GVA_LOG.Error("read body from request error:", zap.Any("err", err))
 			} else {
+				if Library != nil {
+					res, has := Library.HandleWord(string(body), '*')
+					if has {
+						body = []byte(res)
+					}
+				}
 				c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 			}
+		} else {
+			c.Request.URL.Query().Encode()
+			qd, err := json.Marshal(c.Request.URL.Query())
+			if err == nil {
+				body = qd
+			}
+			// TODO GET request are not filtered for the time being
 		}
 		if claims, ok := c.Get("claims"); ok {
 			waitUse := claims.(*request.CustomClaims)
