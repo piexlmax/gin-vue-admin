@@ -86,6 +86,11 @@ var apis = []model.SysApi{
 	{global.GVA_MODEL{ID: 83, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/excel/exportExcel", "导出excel", "excel", "POST"},
 	{global.GVA_MODEL{ID: 84, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/excel/downloadTemplate", "下载excel模板", "excel", "GET"},
 	{global.GVA_MODEL{ID: 85, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/api/deleteApisByIds", "批量删除api", "api", "DELETE"},
+	{global.GVA_MODEL{ID: 86, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/system/reloadSystem", "重启服务", "system", "POST"},
+	{global.GVA_MODEL{ID: 87, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/fileUploadAndDownload/breakpointContinue", "断点续传", "breakpointContinue", "POST"},
+	{global.GVA_MODEL{ID: 88, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/fileUploadAndDownload/breakpointContinueFinish", "断点续传完成", "breakpointContinue", "POST"},
+	{global.GVA_MODEL{ID: 89, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/fileUploadAndDownload/removeChunk", "移除断点续传的分片记录", "breakpointContinue", "POST"},
+	{global.GVA_MODEL{ID: 90, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/fileUploadAndDownload/findFile", "根据ID获取File记录", "fileUploadAndDownload", "POST"},
 }
 
 
@@ -94,7 +99,7 @@ var apis = []model.SysApi{
 //@description: sys_apis 表数据初始化
 func (a *api) Init() error {
 	return global.GVA_DB.Transaction(func(tx *gorm.DB) error {
-		if tx.Where("id IN ?", []int{1, 67}).Find(&[]model.SysApi{}).RowsAffected == 2 {
+		if tx.Where("id IN ?", []int{1, 90}).Find(&[]model.SysApi{}).RowsAffected == 2 {
 			color.Danger.Println("\n[Mysql] --> sys_apis 表的初始数据已存在!")
 			return nil
 		}

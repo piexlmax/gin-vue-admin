@@ -5,7 +5,10 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/model"
 	"gin-vue-admin/model/request"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"strings"
 )
 
 //@author: [piexlmax](https://github.com/piexlmax)
@@ -130,16 +133,84 @@ func UpdateApi(api model.SysApi) (err error) {
 	return err
 }
 
-
-
 //@author: [piexlmax](https://github.com/piexlmax)
 //@function: DeleteApis
 //@description: 删除选中API
 //@param: apis []model.SysApi
 //@return: err error
 
-func DeleteApisByIds(ids request.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]model.SysApi{},"id in ?",ids.Ids).Error
-	return err
-	return
+func DeleteApisByIds(ids request.IdsReq) error {
+	return global.GVA_DB.Delete(&[]model.SysApi{}, "id in ?", ids.Ids).Error
+}
+
+//@author: [SliverHorn](https://github.com/SliverHorn)
+//@function: AutoRegisterRouter
+//@description: 自动把路由注册到sys_apis表
+//@param: engine *gin.Engine
+//@return: error
+
+func AutoRegisterRouter(engine *gin.Engine) error {
+	routes := engine.Routes()
+	for i := 0; i < len(routes); i++ {
+		path := routes[i].Path
+		method := routes[i].Method
+		entity := model.SysApi{Path: path, Method: method}
+		switch { // 排除 不需要鉴权的路由 swagger, uploads/file 静态文件 表单生成器的静态文件托管路由
+		case path == "/base/captcha" && method == "POST":
+			continue
+		case path == "/init/initdb" && method == "POST":
+			continue
+		case path == "/init/checkdb" && method == "POST":
+			continue
+		case path == "/swagger/*any" && method == "GET":
+			continue
+		case path == "/uploads/file/*filepath" && (method == "HEAD" || method == "GET"):
+			continue
+		case path == "/form-generator/*filepath" && (method == "HEAD" || method == "GET"):
+			continue
+		}
+		if !errors.Is(global.GVA_DB.Where("path = ? AND method = ?", path, method).First(&model.SysApi{}).Error, gorm.ErrRecordNotFound) {
+			//global.GVA_LOG.Info("sys_apis 表已经存在此记录!", zap.String("Path", path), zap.String("method", method))
+			continue
+		}
+		if strings.Contains(path, "create") {
+			if list := strings.Split(path, "create"); len(list) == 2 {
+				entity.Description = "新建" + list[1]
+			}
+		} else if strings.Contains(path, "find") {
+			if list := strings.Split(path, "find"); len(list) == 2 {
+				entity.Description = "根据ID获取" + list[1]
+			}
+		} else if strings.Contains(path, "update") {
+			if list := strings.Split(path, "update"); len(list) == 2 {
+				entity.Description = "更新" + list[1]
+			}
+		} else if strings.Contains(path, "delete") {
+			if list := strings.Split(path, "delete"); len(list) == 2 {
+				if strings.Contains(list[1], "ByIds") {
+					if deletes := strings.Split(list[1], "ByIds"); len(deletes) == 2 {
+						entity.Description = "批量删除" + deletes[0]
+					}
+				} else {
+					entity.Description = "删除" + list[1]
+				}
+			}
+		} else if strings.Contains(path, "get") {
+			if list := strings.Split(path, "get"); len(list) == 2 {
+				if strings.Contains(list[1], "List") {
+					if lists := strings.Split(list[1], "List"); len(lists) == 2 {
+						entity.Description = "获取" + lists[0] + "列表"
+					}
+				}
+				entity.Description = "获取" + list[1]
+			}
+		} else {
+			entity.Description = path // 如果不符合代码生成器规则, api中文描述则为路由路径
+		}
+		if err := global.GVA_DB.Create(&entity).Error; err != nil { // 创建api记录
+			global.GVA_LOG.Info("插入 sys_apis 表记录失败!", zap.String("Path", path), zap.String("method", method))
+			return err
+		}
+	}
+	return nil
 }

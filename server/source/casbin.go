@@ -49,6 +49,7 @@ var carbines = []gormadapter.CasbinRule{
 	{PType: "p", V0: "888", V1: "/system/getSystemConfig", V2: "POST"},
 	{PType: "p", V0: "888", V1: "/system/setSystemConfig", V2: "POST"},
 	{PType: "p", V0: "888", V1: "/system/getServerInfo", V2: "POST"},
+	{PType: "p", V0: "888", V1: "/system/reloadSystem", V2: "POST"},
 	{PType: "p", V0: "888", V1: "/customer/customer", V2: "POST"},
 	{PType: "p", V0: "888", V1: "/customer/customer", V2: "PUT"},
 	{PType: "p", V0: "888", V1: "/customer/customer", V2: "DELETE"},
@@ -167,7 +168,7 @@ var carbines = []gormadapter.CasbinRule{
 func (c *casbin) Init() error {
 	global.GVA_DB.AutoMigrate(gormadapter.CasbinRule{})
 	return global.GVA_DB.Transaction(func(tx *gorm.DB) error {
-		if tx.Find(&[]gormadapter.CasbinRule{}).RowsAffected == 154 {
+		if tx.Find(&[]gormadapter.CasbinRule{}).RowsAffected == 148 {
 			color.Danger.Println("\n[Mysql] --> casbin_rule 表的初始数据已存在!")
 			return nil
 		}

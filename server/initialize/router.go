@@ -4,7 +4,9 @@ import (
 	_ "gin-vue-admin/docs"
 	"gin-vue-admin/global"
 	"gin-vue-admin/middleware"
+	"gin-vue-admin/model/response"
 	"gin-vue-admin/router"
+	"gin-vue-admin/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,6 +31,13 @@ func Routers() *gin.Engine {
 	{
 		router.InitBaseRouter(PublicGroup) // 注册基础功能路由 不做鉴权
 		router.InitInitRouter(PublicGroup) // 自动初始化相关
+		PublicGroup.POST("/autoRegisterRouter", func(context *gin.Context) {
+			if err := service.AutoRegisterRouter(Router); err != nil {
+				response.FailWithMessage("自动把路由注册到sys_apis表 失败!", context)
+			} else {
+				response.Ok(context)
+			}
+		})
 	}
 	PrivateGroup := Router.Group("")
 	PrivateGroup.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
