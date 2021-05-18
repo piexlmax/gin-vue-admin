@@ -26,5 +26,7 @@ go.sum
 /server/log/
 /server/gva
 /server/latest_log
+/server/vendor
+/server/pid
 
 *.iml
