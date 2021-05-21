@@ -91,8 +91,12 @@ func ClearCasbin(v int, p ...string) bool {
 func Casbin() *casbin.Enforcer {
 	a, _ := gormadapter.NewAdapterByDB(global.GVA_DB)
 	e, _ := casbin.NewEnforcer(global.GVA_CONFIG.Casbin.ModelPath, a)
-	e.AddFunction("ParamsMatch", ParamsMatchFunc)
-	_ = e.LoadPolicy()
+	if e != nil {
+		e.AddFunction("ParamsMatch", ParamsMatchFunc)
+		_ = e.LoadPolicy()
+	} else {
+		global.GVA_LOG.Error("Casbin Error casbin权限配置文件加载错误")
+	}
 	return e
 }
 
