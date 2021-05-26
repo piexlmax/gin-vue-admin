@@ -4,7 +4,7 @@ export const asyncRouterHandle = (asyncRouter) => {
         if (item.component) {
             item.component = _import(item.component)
         } else {
-            delete item['component']
+            item.component = { render: h => h('router-view') };
         }
         if (item.children) {
             asyncRouterHandle(item.children)
