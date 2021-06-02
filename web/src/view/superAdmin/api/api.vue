@@ -62,7 +62,11 @@
           </div>
         </template>
       </el-table-column>
-
+      <el-table-column label="有效" min-width="150" prop="valid">
+        <template slot-scope="scope">{{
+          scope.row.valid | formatBoolean
+        }}</template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="editApi(scope.row)" size="small" type="primary" icon="el-icon-edit">编辑</el-button>
@@ -326,6 +330,13 @@ export default {
     }
   },
   filters: {
+     formatBoolean: function (bool) {
+      if (bool != null) {
+        return bool ? "是" : "否";
+      } else {
+        return "";
+      }
+    },
     methodFiletr(value) {
       const target = methodOptions.filter(item => item.value === value)[0];
       // return target && `${target.label}(${target.value})`
