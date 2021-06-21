@@ -138,11 +138,11 @@ func InitDB(conf request.InitDB) error {
 	}
 	err = initDB(
 		source.Admin,
-		source.Api,
+		source.Casbin,
 		source.AuthorityMenu,
 		source.Authority,
 		source.AuthoritiesMenus,
-		source.Casbin,
+		source.Api,
 		source.DataAuthorities,
 		source.Dictionary,
 		source.DictionaryDetail,
