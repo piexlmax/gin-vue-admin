@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -35,6 +36,15 @@ func RegisterRule(key string, rule Rules) (err error) {
 
 func NotEmpty() string {
 	return "notEmpty"
+}
+
+//@author: [zooqkl](https://github.com/zooqkl)
+//@function: RegexpMatch
+//@description: 正则校验 校验输入项是否满足正则表达式
+//@param:  rule string
+//@return: string
+func RegexpMatch(rule string) string {
+	return "regexp=" + rule
 }
 
 //@author: [piexlmax](https://github.com/piexlmax)
@@ -132,6 +142,10 @@ func Verify(st interface{}, roleMap Rules) (err error) {
 				case v == "notEmpty":
 					if isBlank(val) {
 						return errors.New(tagVal.Name + "值不能为空")
+					}
+				case strings.Split(v, "=")[0] == "regexp":
+					if !regexpMatch(strings.Split(v, "=")[1], val.String()) {
+						return errors.New(tagVal.Name + "格式校验不通过")
 					}
 				case compareMap[strings.Split(v, "=")[0]]:
 					if !compareVerify(val, v) {
@@ -265,4 +279,8 @@ func compare(value interface{}, VerifyStr string) bool {
 	default:
 		return false
 	}
+}
+
+func regexpMatch(rule, matchStr string) bool {
+	return regexp.MustCompile(rule).MatchString(matchStr)
 }

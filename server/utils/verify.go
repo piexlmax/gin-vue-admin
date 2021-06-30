@@ -14,5 +14,5 @@ var (
 	AuthorityIdVerify      = Rules{"AuthorityId": {NotEmpty()}}
 	OldAuthorityVerify     = Rules{"OldAuthorityId": {NotEmpty()}}
 	ChangePasswordVerify   = Rules{"Username": {NotEmpty()}, "Password": {NotEmpty()}, "NewPassword": {NotEmpty()}}
-	SetUserAuthorityVerify = Rules{"UUID": {NotEmpty()}, "AuthorityId": {NotEmpty()}}
+	SetUserAuthorityVerify = Rules{"UUID": {NotEmpty(), RegexpMatch("[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}")}, "AuthorityId": {NotEmpty()}}
 )
