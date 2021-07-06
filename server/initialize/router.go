@@ -7,6 +7,7 @@ import (
 	"gin-vue-admin/router"
 	"net/http"
 
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -16,6 +17,7 @@ import (
 
 func Routers() *gin.Engine {
 	var Router = gin.Default()
+	pprof.Register(Router)
 	Router.StaticFS(global.GVA_CONFIG.Local.Path, http.Dir(global.GVA_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
 	// Router.Use(middleware.LoadTls())  // 打开就能玩https了
 	global.GVA_LOG.Info("use middleware logger")
