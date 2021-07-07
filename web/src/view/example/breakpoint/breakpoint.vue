@@ -7,7 +7,7 @@
         <input v-show="false" id="file" ref="Input" multiple="multiple" type="file" @change="choseFile">
       </div>
     </form>
-    <el-button :disabled="limitFileSize" type="primary" size="medium" class="uploadBtn" @click="getFile">上传文件</el-button>
+    <el-button :disabled="limitFileSize" type="primary" size="mini" class="uploadBtn" @click="getFile">上传文件</el-button>
     <div class="el-upload__tip">请上传不超过5MB的文件</div>
     <div class="list">
       <transition name="list" tag="p">
@@ -186,7 +186,8 @@ a {
   display: inline-block;
 }
 .fileUpload{
-    padding: 4px 10px;
+    padding: 3px 10px;
+    font-size: 12px;
     height: 20px;
     line-height: 20px;
     position: relative;

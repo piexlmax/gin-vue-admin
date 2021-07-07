@@ -6,9 +6,10 @@
           :collapse="isCollapse"
           :collapse-transition="true"
           :default-active="active"
-          active-text-color="#fff"
+          :background-color="sideMode"
+          :active-text-color="activeColor"
+          :text-color="baseColor"
           class="el-menu-vertical"
-          text-color="rgb(191, 203, 217)"
           unique-opened
           @select="selectMenuItem"
         >
@@ -36,7 +37,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('router', ['asyncRouters'])
+    ...mapGetters('router', ['asyncRouters']),
+    ...mapGetters('user', ['baseColor', 'activeColor', 'sideMode'])
   },
   watch: {
     $route() {
@@ -82,6 +84,21 @@ export default {
 </script>
 
 <style lang="scss">
+.el-submenu__title,.el-menu-item{
+  i{
+    color: inherit !important;
+  }
+}
+
+.el-submenu__title:hover,.el-menu-item:hover{
+  i{
+    color: inherit !important;
+  }
+  span{
+    color: inherit !important;
+  }
+}
+
 .el-scrollbar {
   .el-scrollbar__view {
     height: 100%;

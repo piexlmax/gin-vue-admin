@@ -4,7 +4,9 @@ import (
 	"gin-vue-admin/global"
 	"gin-vue-admin/initialize/internal"
 	"gin-vue-admin/model"
+	"gorm.io/driver/postgres"
 	"os"
+	"strings"
 
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -21,6 +23,8 @@ func Gorm() *gorm.DB {
 	switch global.GVA_CONFIG.System.DbType {
 	case "mysql":
 		return GormMysql()
+	case "postgres":
+		return GormPostgres()
 	default:
 		return GormMysql()
 	}
@@ -80,6 +84,35 @@ func GormMysql() *gorm.DB {
 	}
 	if db, err := gorm.Open(mysql.New(mysqlConfig), gormConfig(m.LogMode)); err != nil {
 		//global.GVA_LOG.Error("MySQL启动异常", zap.Any("err", err))
+		//os.Exit(0)
+		//return nil
+		return nil
+	} else {
+		sqlDB, _ := db.DB()
+		sqlDB.SetMaxIdleConns(m.MaxIdleConns)
+		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
+		return db
+	}
+}
+
+//@author:
+//@function: GormPostgres
+//@description: 初始化Postgres数据库
+//@return: *gorm.DB
+
+func GormPostgres() *gorm.DB {
+	m := global.GVA_CONFIG.Postgres
+	if m.Dbname == "" {
+		return nil
+	}
+	strArr := strings.Split(m.Path,":")
+	dsn := "host=" + strArr[0] + " port=" + strArr[1] + " user=" + m.Username + " password=" + m.Password + " dbname=" + m.Dbname + " sslmode=disable"
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN: dsn,
+		PreferSimpleProtocol: true, // 禁用隐式 prepared statement
+	}), gormConfig(m.LogMode))
+	if err != nil {
+		//global.GVA_LOG.Error("Postgres启动异常", zap.Any("err", err))
 		//os.Exit(0)
 		//return nil
 		return nil

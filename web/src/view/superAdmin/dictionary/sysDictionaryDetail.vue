@@ -15,10 +15,10 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="openDialog">新增字典项</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="openDialog">新增字典项</el-button>
         </el-form-item>
       </el-form>
     </div>

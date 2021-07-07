@@ -145,7 +145,7 @@ export default {
 .uploader-example {
   width: 880px;
   padding: 15px;
-  margin: 115px 15px 20px;
+  margin: 15px 15px 20px;
   font-size: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 }

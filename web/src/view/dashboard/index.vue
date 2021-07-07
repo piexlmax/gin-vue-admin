@@ -173,7 +173,6 @@ export default {
   margin: 100px 0 0 0;
   padding-top: 0;
   background-color: rgb(243, 243, 243);
-  padding-top: 15px;
   .top {
     width: 100%;
     height: 360px;

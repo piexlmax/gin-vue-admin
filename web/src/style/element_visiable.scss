@@ -1,0 +1,21 @@
+/* 改变主题色变量 */
+$--color-primary: #1890ff;
+
+#app{
+  .el-button{
+    font-weight: 400;
+    border-radius: 4px;
+  }
+}
+///* 改变 icon 字体路径变量，必需 */
+//$--font-path: '~element-ui/lib/theme-chalk/fonts';
+//
+//
+//
+//@import "~element-ui/packages/theme-chalk/src/index";
+//
+
+
+:export {
+  colorPrimary: $--color-primary
+}

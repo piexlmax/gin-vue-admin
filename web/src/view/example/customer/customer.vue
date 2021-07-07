@@ -3,7 +3,7 @@
     <div class="search-term">
       <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
         <el-form-item>
-          <el-button type="primary" @click="openDialog">新增客户</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-search" @click="openDialog">新增</el-button>
         </el-form-item>
       </el-form>
     </div>

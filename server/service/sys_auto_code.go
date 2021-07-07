@@ -190,7 +190,7 @@ func GetAllTplFile(pathName string, fileList []string) ([]string, error) {
 //@return: err error, TableNames []request.TableReq
 
 func GetTables(dbName string) (err error, TableNames []request.TableReq) {
-	err = global.GVA_DB.Raw("select table_name as table_name from information_schema.tables where table_schema = ?", dbName).Scan(&TableNames).Error
+	err = global.GVA_DB.Raw("select table_name as table_name from information_schema.tables where table_catalog = ? and table_schema = ?", dbName, "public").Scan(&TableNames).Error
 	return err, TableNames
 }
 
@@ -200,7 +200,14 @@ func GetTables(dbName string) (err error, TableNames []request.TableReq) {
 //@return: err error, DBNames []request.DBReq
 
 func GetDB() (err error, DBNames []request.DBReq) {
-	err = global.GVA_DB.Raw("SELECT SCHEMA_NAME AS `database` FROM INFORMATION_SCHEMA.SCHEMATA;").Scan(&DBNames).Error
+	switch global.GVA_CONFIG.System.DbType {
+	case "mysql":
+		err = global.GVA_DB.Raw("SELECT SCHEMA_NAME AS `database` FROM INFORMATION_SCHEMA.SCHEMATA;").Scan(&DBNames).Error
+	case "postgres":
+		err = global.GVA_DB.Raw("SELECT datname as database FROM pg_database WHERE datistemplate = false;").Scan(&DBNames).Error
+	default:
+		err = global.GVA_DB.Raw("SELECT SCHEMA_NAME AS `database` FROM INFORMATION_SCHEMA.SCHEMATA;").Scan(&DBNames).Error
+	}
 	return err, DBNames
 }
 

@@ -3,9 +3,9 @@
     <el-container :class="[isSider?'openside':'hideside',isMobile ? 'mobile': '']">
       <el-row :class="[isShadowBg?'shadowBg':'']" @click.native="changeShadow()" />
       <el-aside class="main-cont main-left">
-        <div class="tilte">
+        <div class="tilte" :style="{background: backgroundColor}">
           <img alt class="logoimg" :src="$GIN_VUE_ADMIN.appLogo">
-          <h2 v-if="isSider" class="tit-text">{{ $GIN_VUE_ADMIN.appName }}</h2>
+          <h2 v-if="isSider" class="tit-text" :style="{color:textColor}">{{ $GIN_VUE_ADMIN.appName }}</h2>
         </div>
         <Aside class="aside" />
       </el-aside>
@@ -74,6 +74,7 @@
           <router-view v-if="!$route.meta.keepAlive && reloadFlag" v-loading="loadingFlag" element-loading-text="正在加载中" class="admin-box" />
         </transition>
         <BottomInfo />
+        <setting />
       </el-main>
     </el-container>
 
@@ -88,6 +89,7 @@ import Search from '@/view/layout/search/search'
 import BottomInfo from '@/view/layout/bottomInfo/bottomInfo'
 import { mapGetters, mapActions } from 'vuex'
 import CustomPic from '@/components/customPic'
+import Setting from './setting'
 export default {
   name: 'Layout',
   components: {
@@ -96,7 +98,8 @@ export default {
     Screenfull,
     Search,
     BottomInfo,
-    CustomPic
+    CustomPic,
+    Setting
   },
   data() {
     return {
@@ -111,7 +114,25 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['userInfo']),
+    ...mapGetters('user', ['userInfo', 'sideMode', 'baseColor']),
+    textColor() {
+      if (this.$store.getters['user/sideMode'] === 'dark') {
+        return '#fff'
+      } else if (this.$store.getters['user/sideMode'] === 'light') {
+        return '#191a23'
+      } else {
+        return this.baseColor
+      }
+    },
+    backgroundColor() {
+      if (this.sideMode === 'dark') {
+        return '#191a23'
+      } else if (this.sideMode === 'light') {
+        return '#fff'
+      } else {
+        return this.sideMode
+      }
+    },
     title() {
       return this.$route.meta.title || '当前页面'
     },
@@ -193,150 +214,12 @@ export default {
 <style lang="scss">
 @import '@/style/mobile.scss';
 
-// $headerHigh: 52px;
-// $mainHight: 100vh;
-// .dropdown-group {
-//   min-width: 100px;
-// }
-// .topfix {
-//   position: fixed;
-//   top: 0;
-//   box-sizing: border-box;
-//   z-index: 999;
-// }
-// .admin-box {
-//   min-height: calc(100vh - 240px);
-//   background-color: rgb(255, 255, 255);
-//   margin-top: 100px;
-// }
-// .el-scrollbar__wrap {
-//   padding-bottom: 17px;
-// }
-// .layout-cont {
-//   .right-box {
-//     text-align: center;
-//     vertical-align: middle;
-//     img {
-//       vertical-align: middle;
-//       border: 1px solid #ccc;
-//       border-radius: 6px;
-//     }
-//   }
-
-//   .header-cont {
-//     height: $headerHigh !important;
-//     background: #fff;
-//     box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-//     line-height: $headerHigh;
-//   }
-//   .main-cont {
-//     .breadcrumb {
-//       line-height: 48px;
-//       display: inline-block;
-//       padding: 0 24px;
-//       // padding: 6px;
-//       // border-bottom: 1px solid #eee;
-//     }
-
-//     &.el-main {
-//       overflow: auto;
-//       background: #fff;
-//       // padding: 0px 10px;
-//       // background: #fff;
-//     }
-//     height: $mainHight !important;
-//     overflow: visible;
-//     position: relative;
-//     .menu-total {
-//       // z-index: 5;
-//       // position: absolute;
-//       // top: 10px;
-//       // right: -35px;
-//       margin-left: -10px;
-//       float: left;
-//       margin-top: 10px;
-//       width: 30px;
-//       height: 30px;
-//       line-height: 30px;
-//       font-size: 30px;
-//       // border: 0 solid #ffffff;
-//       // border-radius: 50%;
-//       // background: #fff;
-//     }
-//     .aside {
-//       overflow: auto;
-//       // background: #fff;
-//       &::-webkit-scrollbar {
-//         display: none;
-//       }
-//     }
-//     .el-menu-vertical {
-//       height: calc(100vh - 64px) !important;
-//       visibility: auto;
-//       &:not(.el-menu--collapse) {
-//         width: 220px;
-//       }
-//     }
-//     .el-menu--collapse {
-//       width: 54px;
-//       li {
-//         .el-tooltip,
-//         .el-submenu__title {
-//           padding: 0px 15px !important;
-//         }
-//       }
-//     }
-//     &::-webkit-scrollbar {
-//       display: none;
-//     }
-//     &.main-left {
-//       width: auto !important;
-//     }
-//     &.main-right {
-//       .admin-title {
-//         float: left;
-//         font-size: 16px;
-//         vertical-align: middle;
-//         margin-left: 20px;
-//         img {
-//           vertical-align: middle;
-//         }
-//         &.collapse {
-//           width: 53px;
-//         }
-//       }
-//     }
-//   }
-// }
-// .tilte {
-//   background: #001529;
-//   min-height: 64px;
-//   line-height: 64px;
-//   background: #002140;
-//   text-align: center;
-//   .logoimg {
-//     width: 30px;
-//     height: 30px;
-//     vertical-align: middle;
-//     background: #fff;
-//     border-radius: 50%;
-//     padding: 3px;
-//   }
-//   .tit-text {
-//     display: inline-block;
-//     color: #fff;
-//     font-weight: 600;
-//     font-size: 20px;
-//     vertical-align: middle;
-//   }
-// }
-
-// .screenfull {
-//   display: inline-block;
-// }
-// .header-avatar{
-// 	display: flex;
-// 	justify-content: center;
-// 	align-items: center;
-// }
+.dark{
+  background-color: #191a23 !important;
+  color: #fff !important;
+}
+.light{
+  background-color: #fff !important;
+  color: #000 !important;
+}
 </style>

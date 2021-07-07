@@ -13,7 +13,7 @@
           <el-input v-model="dialogMiddle.fieldName" autocomplete="off" />
         </el-col>
         <el-col :offset="1" :span="2">
-          <el-button @click="autoFill">自动填充</el-button>
+          <el-button size="mini" @click="autoFill">自动填充</el-button>
         </el-col>
       </el-form-item>
       <el-form-item label="Field中文名" prop="fieldDesc">

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="button-box clearflex">
-      <el-button type="primary" @click="addUser">新增用户</el-button>
+      <el-button size="mini" type="primary" icon="el-icon-plus" @click="addUser">新增用户</el-button>
     </div>
     <el-table :data="tableData" border stripe>
       <el-table-column label="头像" min-width="50">
@@ -34,7 +34,7 @@
               <el-button size="mini" type="text" @click="scope.row.visible = false">取消</el-button>
               <el-button type="primary" size="mini" @click="deleteUser(scope.row)">确定</el-button>
             </div>
-            <el-button slot="reference" type="danger" icon="el-icon-delete" size="small">删除</el-button>
+            <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini">删除</el-button>
           </el-popover>
         </template>
       </el-table-column>

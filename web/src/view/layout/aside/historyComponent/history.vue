@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="router-history">
     <el-tabs
       v-model="activeValue"
@@ -10,11 +10,14 @@
     >
       <el-tab-pane
         v-for="item in historys"
-        :key="item.name + JSON.stringify(item.query)+JSON.stringify(item.params)"
+        :key="name(item)"
         :label="item.meta.title"
-        :name="item.name + JSON.stringify(item.query)+JSON.stringify(item.params)"
+        :name="name(item)"
         :tab="item"
-      />
+        class="gva-tab"
+      >
+        <span slot="label" :style="{color: activeValue===name(item)?activeColor:'#333'}"><i class="dot" :style="{backgroundColor:activeValue===name(item)?activeColor:'#ddd'}" /> {{ item.meta.title }}</span>
+      </el-tab-pane>
     </el-tabs>
 
     <!--自定义右键菜单html代码-->
@@ -49,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('user', ['userInfo']),
+    ...mapGetters('user', ['userInfo', 'activeColor']),
     defaultRouter() {
       return this.userInfo.authority.defaultRouter
     }
@@ -108,7 +111,9 @@ export default {
     this.$bus.off('mobile')
   },
   methods: {
-
+    name(item) {
+      return item.name + JSON.stringify(item.query) + JSON.stringify(item.params)
+    },
     openContextMenu(e) {
       if (this.historys.length === 1 && this.$route.name === this.defaultRouter) {
         return false
@@ -277,6 +282,19 @@ export default {
   color: #333;
   box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.2);
 }
+.el-tabs__item .el-icon-close{
+  color: initial !important;
+}
+.el-tabs__item .dot {
+  content: "";
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  display: inline-block;
+  border-radius: 50%;
+  transition: background-color .2s;
+}
+
 .contextmenu li {
   margin: 0;
   padding: 7px 16px;

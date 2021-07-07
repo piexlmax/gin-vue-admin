@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="button-box clearflex">
-      <el-button type="primary" @click="addMenu('0')">新增根菜单</el-button>
+      <el-button size="mini" type="primary" icon="el-icon-plus" @click="addMenu('0')">新增根菜单</el-button>
     </div>
 
     <!-- 由于此处菜单跟左侧列表一一对应所以不需要分页 pageSize默认999 -->
@@ -31,19 +31,19 @@
       <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
           <el-button
-            size="small"
+            size="mini"
             type="primary"
             icon="el-icon-edit"
             @click="addMenu(scope.row.ID)"
           >添加子菜单</el-button>
           <el-button
-            size="small"
+            size="mini"
             type="primary"
             icon="el-icon-edit"
             @click="editMenu(scope.row.ID)"
           >编辑</el-button>
           <el-button
-            size="small"
+            size="mini"
             type="danger"
             icon="el-icon-delete"
             @click="deleteMenu(scope.row.ID)"

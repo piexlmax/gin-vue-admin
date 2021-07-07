@@ -12,16 +12,14 @@
           <el-input v-model="searchInfo.status" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-        <el-form-item>
+          <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
           <el-popover v-model="deleteVisible" placement="top" width="160">
             <p>确定要删除吗？</p>
             <div style="text-align: right; margin: 0">
               <el-button size="mini" type="text" @click="deleteVisible = false">取消</el-button>
               <el-button size="mini" type="primary" @click="onDelete">确定</el-button>
             </div>
-            <el-button slot="reference" icon="el-icon-delete" size="mini" type="danger">批量删除</el-button>
+            <el-button slot="reference" icon="el-icon-delete" size="mini" type="danger" style="margin-left: 10px;">批量删除</el-button>
           </el-popover>
         </el-form-item>
       </el-form>

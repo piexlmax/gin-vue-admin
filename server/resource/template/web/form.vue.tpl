@@ -27,8 +27,8 @@
       </el-form-item>
     {{ end -}}
       <el-form-item>
-        <el-button type="primary" @click="save">保存</el-button>
-        <el-button type="primary" @click="back">返回</el-button>
+        <el-button size="mini" type="primary" @click="save">保存</el-button>
+        <el-button size="mini" type="primary" @click="back">返回</el-button>
       </el-form-item>
     </el-form>
 </div>

@@ -563,13 +563,13 @@ li {
         .el-menu {
             border-right: none;
         }
-        
+
         .tilte {
             min-height: $height-aside-tilte;
             line-height: $height-aside-tilte;
             background: $bg-aside;
             text-align: center;
-
+            transition: all 0.3s;
             .logoimg {
                 width: $width-aside-img;
                 height: $height-aside-img;
@@ -593,6 +593,7 @@ li {
 
     .aside {
         .el-menu-vertical {
+            transition: all 0.3s;
             background-color: $bg-aside;
         }
         .el-submenu {
@@ -603,7 +604,7 @@ li {
                     height: 44px;
                     line-height: 44px;
                 }
-                .is-active {    
+                .is-active {
                     background-color: #1890ff;
                     // 关闭三级菜单二级菜单样式
                     ul{
@@ -715,7 +716,7 @@ li {
 }
 
 .admin-box {
-    padding: 15px 20px;
+    padding: 14px 20px;
     .el-button {
         padding: 7px 10px;
     }
@@ -732,13 +733,13 @@ li {
 .admin-box {
     min-height: calc(100vh - 200px);
     background-color: $white-bg;
-    padding: 15px;
-    margin: 115px 15px 20px;
+    padding: 14px;
+    margin: 114px 14px 20px;
     border-radius: 2px;
 
     .el-table--border {
         border-radius: 4px;
-        margin-bottom: 15px;
+        margin-bottom: 14px;
     }
 
     .el-table {
@@ -1090,21 +1091,6 @@ li {
                     border-left: 1px solid $border-color;
                 }
 
-                .el-tabs__item::before {
-                    content: "";
-                    width: 9px;
-                    height: 9px;
-                    margin-right: 8px;
-                    display: inline-block;
-                    background-color: #ddd;
-                    border-radius: 50%;
-                    transition: background-color .2s;
-                }
-
-                .el-tabs__item.is-active::before {
-                    background-color: #409eff;
-                }
-
                 .el-tabs__item.is-active {
                     background-color: rgba(64, 158, 255, .08);
                 }
@@ -1210,7 +1196,7 @@ $mainHight: 100vh;
             height: 60px;
         }
     }
-   
+
 
 }
 
@@ -1226,7 +1212,7 @@ $mainHight: 100vh;
         line-height: $height-header;
         text-align: center;
         vertical-align: middle;
-        margin-right: 40px;
+        margin-right: 10px;
 
         img {
             vertical-align: middle;
@@ -1246,7 +1232,7 @@ $mainHight: 100vh;
             line-height: $height-header;
             display: inline-block;
             background-color: #fff;
-            padding: 0 24px;
+            padding: 0;
         }
 
         .fl-right {
@@ -1284,7 +1270,6 @@ $mainHight: 100vh;
         .el-menu-vertical {
             height: calc(100vh - 64px) !important;
             visibility: auto;
-
             &:not(.el-menu--collapse) {
                 width: 220px;
             }
@@ -1485,7 +1470,7 @@ $mainHight: 100vh;
 }
 
 .shadow {
-    margin: 5px 0;
+    margin: 4px 0;
 
     .grid-content {
         background-color: $white-bg;

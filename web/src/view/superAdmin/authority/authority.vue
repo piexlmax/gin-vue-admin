@@ -1,7 +1,7 @@
 <template>
   <div class="authority">
     <div class="button-box clearflex">
-      <el-button type="primary" @click="addAuthority('0')">新增角色</el-button>
+      <el-button size="mini" type="primary" icon="el-icon-plus" @click="addAuthority('0')">新增角色</el-button>
     </div>
     <el-table
       :data="tableData"
@@ -15,28 +15,28 @@
       <el-table-column label="角色名称" min-width="180" prop="authorityName" />
       <el-table-column fixed="right" label="操作" width="460">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" @click="opdendrawer(scope.row)">设置权限</el-button>
+          <el-button size="mini" type="primary" @click="opdendrawer(scope.row)">设置权限</el-button>
           <el-button
             icon="el-icon-plus"
-            size="small"
+            size="mini"
             type="primary"
             @click="addAuthority(scope.row.authorityId)"
           >新增子角色</el-button>
           <el-button
             icon="el-icon-copy-document"
-            size="small"
+            size="mini"
             type="primary"
             @click="copyAuthority(scope.row)"
           >拷贝</el-button>
           <el-button
             icon="el-icon-edit"
-            size="small"
+            size="mini"
             type="primary"
             @click="editAuthority(scope.row)"
           >编辑</el-button>
           <el-button
             icon="el-icon-delete"
-            size="small"
+            size="mini"
             type="danger"
             @click="deleteAuth(scope.row)"
           >删除</el-button>

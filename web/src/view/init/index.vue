@@ -22,8 +22,9 @@
       <div v-if="hello > 0 " :class="[(hello > 0 && !out)? 'slide-in-left' : '' , out ? 'slide-out-right' : '']" class=" form">
         <el-form ref="form" :model="form" label-width="100px">
           <el-form-item label="数据库类型">
-            <el-select v-model="form.sqlType" disabled placeholder="请选择">
+            <el-select v-model="form.sqlType" placeholder="请选择">
               <el-option key="mysql" label="mysql(目前只支持mysql)" value="mysql" />
+              <el-option key="postgres" label="postgres" value="postgres" />
             </el-select>
           </el-form-item>
           <el-form-item label="host">

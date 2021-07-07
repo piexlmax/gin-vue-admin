@@ -14,4 +14,7 @@ type SysUser struct {
 	HeaderImg   string       `json:"headerImg" gorm:"default:http://qmplusimg.henrongyi.top/head.png;comment:用户头像"` // 用户头像
 	Authority   SysAuthority `json:"authority" gorm:"foreignKey:AuthorityId;references:AuthorityId;comment:用户角色"`
 	AuthorityId string       `json:"authorityId" gorm:"default:888;comment:用户角色ID"` // 用户角色ID
+	SideMode	string       `json:"sideMode" gorm:"default:dark;comment:用户角色ID"` // 用户侧边主题
+	ActiveColor	string       `json:"activeColor" gorm:"default:#1890ff;comment:用户角色ID"` // 活跃颜色
+	BaseColor	string       `json:"baseColor" gorm:"default:#fff;comment:用户角色ID"` // 基础颜色
 }

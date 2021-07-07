@@ -10,12 +10,12 @@
                     padding: 0 $padding-xs;
                 }
             }
-        } 
+        }
         .layout-cont{
             .right-box{
                 margin-right: $margin-xs;
             }
-        } 
+        }
         .search-component{
             width: 30px;
         }
@@ -29,7 +29,7 @@
                 margin-right: 0;
             }
             .big.admin-box{
-                padding: 0 0 15px 0;
+                padding: 0;
             }
             .big {
                 .bottom {
@@ -44,7 +44,7 @@
                 }
             }
         }
-       
+
         .card .car-left,
         .card .car-right{
             width: 100%;
@@ -64,13 +64,13 @@
             }
         }
         .shadow{
-            margin-left: 5px;
-            margin-right: 5px;
+            margin-left: 4px;
+            margin-right: 4px;
             .grid-content{
                 margin-bottom: 10px;
                 padding: 0;
             }
-        } 
+        }
         .el-dialog{
             width: 90%;
         }
@@ -83,7 +83,7 @@
                 padding: 0 5px;
                 display: inline-block;
             }
-           
+
         }
-       
+
 }

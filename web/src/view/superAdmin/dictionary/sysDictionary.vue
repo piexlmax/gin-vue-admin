@@ -18,10 +18,8 @@
           <el-input v-model="searchInfo.desc" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="openDialog">新增字典</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="openDialog">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -50,8 +48,8 @@
 
       <el-table-column label="按钮组">
         <template slot-scope="scope">
-          <el-button size="small" type="success" @click="toDetile(scope.row)">详情</el-button>
-          <el-button size="small" type="primary" @click="updateSysDictionary(scope.row)">变更</el-button>
+          <el-button size="mini" type="success" @click="toDetile(scope.row)">详情</el-button>
+          <el-button size="mini" type="primary" @click="updateSysDictionary(scope.row)">变更</el-button>
           <el-popover v-model="scope.row.visible" placement="top" width="160">
             <p>确定要删除吗？</p>
             <div style="text-align: right; margin: 0">

@@ -1,23 +1,18 @@
 <template>
   <div class="upload">
-    <el-row>
-      <el-col :span="2">
-        <el-upload
-          :action="`${path}/excel/importExcel`"
-          :headers="{'x-token':token}"
-          :on-success="loadExcel"
-          :show-file-list="false"
-        >
-          <el-button size="small" type="primary" icon="el-icon-upload2">导入</el-button>
-        </el-upload>
-      </el-col>
-      <el-col :span="2">
-        <el-button size="small" type="primary" icon="el-icon-download" @click="handleExcelExport('ExcelExport.xlsx')">导出</el-button>
-      </el-col>
-      <el-col :span="2">
-        <el-button size="small" type="success" icon="el-icon-download" @click="downloadExcelTemplate()">下载模板</el-button>
-      </el-col>
-    </el-row>
+    <div class="btn-list">
+      <el-upload
+        class="excel-btn"
+        :action="`${path}/excel/importExcel`"
+        :headers="{'x-token':token}"
+        :on-success="loadExcel"
+        :show-file-list="false"
+      >
+        <el-button size="small" type="primary" icon="el-icon-upload2">导入</el-button>
+      </el-upload>
+      <el-button class="excel-btn" size="small" type="primary" icon="el-icon-download" @click="handleExcelExport('ExcelExport.xlsx')">导出</el-button>
+      <el-button class="excel-btn" size="small" type="success" icon="el-icon-download" @click="downloadExcelTemplate()">下载模板</el-button>
+    </div>
     <el-table :data="tableData" border row-key="ID" stripe>
       <el-table-column label="ID" min-width="100" prop="ID" />
       <el-table-column label="路由Name" min-width="160" prop="name" />
@@ -73,3 +68,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.btn-list{
+  display: flex;
+  margin-bottom: 12px;
+  .excel-btn+.excel-btn{
+    margin-left: 12px;
+  }
+}
+</style>
