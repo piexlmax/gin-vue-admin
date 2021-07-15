@@ -90,6 +90,10 @@ var apis = []model.SysApi{
 	{global.GVA_MODEL{ID: 87, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/autoCode/rollback", "回滚自动生成代码", "autoCode", "POST"},
 	{global.GVA_MODEL{ID: 88, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/autoCode/getMeta", "获取meta信息", "autoCode", "POST"},
 	{global.GVA_MODEL{ID: 89, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/autoCode/delSysHistory", "删除回滚记录", "autoCode", "POST"},
+	{global.GVA_MODEL{ID: 90, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/fileUploadAndDownload/findFile", "查找文件", "fileUploadAndDownload", "GET"},
+	{global.GVA_MODEL{ID: 91, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/fileUploadAndDownload/breakpointContinue", "断点续传", "fileUploadAndDownload", "POST"},
+	{global.GVA_MODEL{ID: 92, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/fileUploadAndDownload/breakpointContinueFinish", "断点续传完成", "fileUploadAndDownload", "PUT"},
+	{global.GVA_MODEL{ID: 93, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/fileUploadAndDownload/removeChunk", "删除分片", "fileUploadAndDownload", "DELETE"},
 }
 
 //@author: [SliverHorn](https://github.com/SliverHorn)

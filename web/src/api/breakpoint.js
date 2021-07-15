@@ -19,7 +19,7 @@ export const findFile = (params) => {
 export const breakpointContinueFinish = (params) => {
   return service({
     url: '/fileUploadAndDownload/breakpointContinueFinish',
-    method: 'post',
+    method: 'put',
     params
   })
 }
@@ -27,7 +27,7 @@ export const breakpointContinueFinish = (params) => {
 export const removeChunk = (data, params) => {
   return service({
     url: '/fileUploadAndDownload/removeChunk',
-    method: 'post',
+    method: 'delete',
     data,
     params
   })

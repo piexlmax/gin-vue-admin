@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -11,8 +13,8 @@ import (
 // 前端发送每片多大
 // 前端告知是否为最后一片且是否完成
 
-const breakpointDir = "./breakpointDir/"
-const finishDir = "./fileDir/"
+const BreakpointDir = "./breakpointDir/"
+const FinishDir = "./fileDir/"
 
 //@author: [piexlmax](https://github.com/piexlmax)
 //@function: BreakPointContinue
@@ -21,12 +23,13 @@ const finishDir = "./fileDir/"
 //@return: error, string
 
 func BreakPointContinue(content []byte, fileName string, contentNumber int, contentTotal int, fileMd5 string) (error, string) {
-	path := breakpointDir + fileMd5 + "/"
+	path := BreakpointDir + fileMd5 + "/"
 	err := os.MkdirAll(path, os.ModePerm)
 	if err != nil {
 		return err, path
 	}
-	err, pathc := makeFileContent(content, fileName, path, contentNumber)
+	// filename 无实际用处，改为 fileMd5
+	err, pathc := makeFileContent(content, fileMd5, path, contentNumber)
 	return err, pathc
 
 }
@@ -74,25 +77,45 @@ func makeFileContent(content []byte, fileName string, FileDir string, contentNum
 //@return: error, string
 
 func MakeFile(fileName string, FileMd5 string) (error, string) {
-	rd, err := ioutil.ReadDir(breakpointDir + FileMd5)
+	//rd, err := ioutil.ReadDir(BreakpointDir + FileMd5)
+	//if err != nil {
+	//	return err, FinishDir + FileMd5
+	//}
+	_ = os.MkdirAll(FinishDir, os.ModePerm)
+	fd, err := os.OpenFile(FinishDir+FileMd5, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
-		return err, finishDir + fileName
-	}
-	_ = os.MkdirAll(finishDir, os.ModePerm)
-	fd, err := os.OpenFile(finishDir+fileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
-	if err != nil {
-		return err, finishDir + fileName
+		return err, FinishDir + FileMd5
 	}
 	defer fd.Close()
-	for k := range rd {
-		content, _ := ioutil.ReadFile(breakpointDir + FileMd5 + "/" + fileName + "_" + strconv.Itoa(k))
+
+	var contents string
+	i := 1
+	for {
+		filepath := fmt.Sprintf("%s/%s/%s_%d", BreakpointDir, FileMd5, FileMd5, i)
+		_, err := os.Stat(filepath)
+		if err != nil {
+			break
+		}
+
+		content, _ := ioutil.ReadFile(filepath)
 		_, err = fd.Write(content)
 		if err != nil {
-			_ = os.Remove(finishDir + fileName)
-			return err, finishDir + fileName
+			_ = os.Remove(FinishDir + fileName)
+			return err, FinishDir + FileMd5
 		}
+		contents += string(content)
+
+		i++
 	}
-	return nil, finishDir + fileName
+
+	// 校验MD5
+	md5 := MD5V([]byte(contents))
+	if md5 != FileMd5 {
+		_ = RemoveChunk(FileMd5)
+		return errors.New("生成的文件MD5错误，请重新生成"), ""
+	}
+
+	return nil, FinishDir + FileMd5
 }
 
 //@author: [piexlmax](https://github.com/piexlmax)
@@ -102,6 +125,6 @@ func MakeFile(fileName string, FileMd5 string) (error, string) {
 //@return: error
 
 func RemoveChunk(FileMd5 string) error {
-	err := os.RemoveAll(breakpointDir + FileMd5)
+	err := os.RemoveAll(BreakpointDir + FileMd5)
 	return err
 }

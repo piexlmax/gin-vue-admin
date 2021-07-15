@@ -27,4 +27,10 @@ go.sum
 /server/gva
 /server/latest_log
 
+/server/uploads
+/server/chunk
+/server/finish
+/server/breakpointDir
+/server/fileDir
+
 *.iml
