@@ -1,4 +1,5 @@
 // +build packfile
+// +build !go1.16
 
 package packfile
 
